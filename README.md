@@ -50,6 +50,10 @@ Final Test Evaluation
 - Regularized Logistic Regression (L1 / L2)
 - SGD Classifier
 
+### Distance-Based Models
+
+- K-Nearest Neighbors (KNN)
+
 ### Support Vector Machines
 
 - Linear SVM
@@ -88,36 +92,47 @@ For imbalanced datasets, F1 Score and Recall receive special attention.
 
 ---
 
-## Completed Projects
-
-### 1. Telco Customer Churn Prediction
-
-**Objective**
-
-Predict whether a customer will churn based on demographic and service-related information.
+# Predict whether a customer will churn based on demographic and service-related information.
 
 **Highlights**
 
 - Hidden missing value detection
 - Feature encoding
-- Scaling
+- Feature scaling
 - Logistic Regression
+- Regularized Logistic Regression
 - SGD Classifier
+- K-Nearest Neighbors (KNN)
+- Hyperparameter tuning using GridSearchCV
 - Hyperparameter tuning using RandomizedSearchCV
 
 **Best Model**
 
-SGDClassifier
+KNeighborsClassifier
+
+Best Parameters:
+
+```python
+KNeighborsClassifier(
+    metric='manhattan',
+    n_neighbors=29,
+    weights='uniform'
+)
+```
 
 **Final Test Performance**
 
 | Metric | Score |
 |----------|----------|
-| Accuracy | 79.75% |
-| Precision | 62.79% |
-| Recall | 57.86% |
-| F1 Score | 60.22% |
-| ROC-AUC | 84.62% |
+| Accuracy | 78.43% |
+| Precision | 59.29% |
+| Recall | 59.29% |
+| F1 Score | 59.29% |
+| ROC-AUC | 83.39% |
+
+**Key Finding**
+
+Hyperparameter tuning improved KNN significantly, increasing validation F1 score from **54.17%** to **60.22%**. The final model generalized well, achieving a test F1 score of **59.29%** with only a minor drop from validation performance.
 
 ---
 
@@ -126,6 +141,7 @@ SGDClassifier
 ```text
 ML-Classification-Lab/
 │── Customer Churn Classifier - Logistic Regression.ipynb
+│── Customer Churn Classifier - KNN.ipynb
 └── README.md
 ```
 
