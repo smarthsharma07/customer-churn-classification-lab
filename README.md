@@ -134,13 +134,14 @@ Predict whether a customer will churn based on demographic, account, and service
 
 ## Best Model
 
-### Tuned Class-Balanced RBF SVM
+### Tuned Balanced Decision Tree
 
 ```python
-SVC(
-    kernel="rbf",
-    C=1,
-    gamma=0.1,
+DecisionTreeClassifier(
+    criterion="gini",
+    max_depth=3,
+    min_samples_split=2,
+    min_samples_leaf=1,
     class_weight="balanced",
     random_state=42
 )
@@ -151,12 +152,12 @@ SVC(
 ## Final Test Performance
 
 | Metric | Score |
-|----------|----------|
-| Accuracy | 74.83% |
-| Precision | 51.64% |
-| Recall | 78.57% |
-| F1 Score | 62.32% |
-| ROC-AUC | 82.39% |
+|----------|----------:|
+| Accuracy | 74.93% |
+| Precision | 51.74% |
+| Recall | 79.64% |
+| F1 Score | **62.73%** |
+| ROC-AUC | 76.44% |
 
 ---
 
@@ -164,64 +165,70 @@ SVC(
 
 ### 1. Class Imbalance Handling Was Critical
 
-The largest performance improvements came from introducing balanced class weights.
+The largest performance improvements across multiple models came from assigning balanced class weights.
 
-Both Linear and RBF SVMs showed substantial improvements in Recall and F1 Score after accounting for class imbalance.
-
----
-
-### 2. Linear SVM Was Surprisingly Competitive
-
-The tuned class-balanced Linear SVM achieved:
-
-- Validation F1 Score: 60.24%
-- Validation Recall: 79.00%
-
-This demonstrated that relatively simple decision boundaries were already effective for the churn dataset.
-
----
-
-### 3. RBF SVM Achieved the Best Overall Performance
-
-After tuning:
+Models using:
 
 ```python
-C = 1
-gamma = 0.1
-class_weight = "balanced"
+class_weight="balanced"
 ```
 
-the RBF SVM achieved the highest validation and test F1 Scores.
+consistently achieved higher Recall and F1 Scores by properly accounting for the minority churn class.
 
 ---
 
-### 4. Hyperparameter Tuning Matters
+### 2. Hyperparameter Tuning Was More Important Than Model Complexity
 
-Significant performance gains were achieved through systematic hyperparameter optimization using GridSearchCV and RandomizedSearchCV.
+The Decision Tree improved from:
+
+| Model | F1 Score |
+|----------|----------:|
+| Baseline Decision Tree | 50.63% |
+| Tuned Decision Tree | **62.73%** |
+
+This demonstrates that systematic hyperparameter optimization can have a larger impact than simply choosing a more sophisticated algorithm.
 
 ---
 
-### 5. Naive Bayes Was a Strong Recall-Oriented Model
+### 3. Simpler Models Can Generalize Better
 
-Gaussian Naive Bayes achieved:
+The best-performing Decision Tree used:
 
-| Metric | Score |
-|----------|----------|
-| Accuracy | 68.78% |
-| Precision | 45.27% |
-| Recall | 85.36% |
-| F1 Score | 59.16% |
-| ROC-AUC | 81.48% |
+```python
+max_depth = 3
+```
 
-Key observations:
+A shallow tree generalized better than deeper trees, suggesting that the churn patterns could be captured using only a few important decision rules.
 
-- Achieved the highest Recall among all models tested so far.
-- Successfully identified approximately 85% of all churning customers.
-- Produced a strong ROC-AUC despite its simplicity.
-- Generated a large number of False Positives, reducing Precision.
-- Hyperparameter tuning produced virtually no improvement, indicating that performance was dominated by model assumptions rather than tuning.
+---
 
-The experiment highlighted the trade-off between maximizing Recall and maintaining Precision.
+### 4. Strong Generalization Was Achieved
+
+| Evaluation Stage | F1 Score |
+|----------|----------:|
+| Cross Validation | 62.11% |
+| Validation Set | 61.49% |
+| Test Set | 62.73% |
+
+The consistency across datasets indicates minimal overfitting and strong generalization performance.
+
+---
+
+### 5. Recall Matters More Than Accuracy
+
+Customer churn prediction is an imbalanced classification problem.
+
+Missing a customer who is about to churn is often more costly than incorrectly flagging a loyal customer.
+
+For this reason, F1 Score, Recall, and ROC-AUC were prioritized over Accuracy during model selection.
+
+---
+
+### 6. Naive Bayes Demonstrated the Recall–Precision Tradeoff
+
+Gaussian Naive Bayes achieved excellent Recall while generating more False Positives than other models.
+
+This experiment highlighted how different algorithms optimize different aspects of classification performance.
 
 ---
 
@@ -236,7 +243,7 @@ The experiment highlighted the trade-off between maximizing Recall and maintaini
 ### K-Nearest Neighbors
 
 - Benefited significantly from proper scaling.
-- Showed sensitivity to hyperparameter choices such as the number of neighbors.
+- Showed sensitivity to hyperparameter choices.
 - Provided competitive performance after tuning.
 
 ### Gaussian Naive Bayes
@@ -249,26 +256,41 @@ The experiment highlighted the trade-off between maximizing Recall and maintaini
 
 ### Support Vector Machines
 
-- Delivered the strongest overall performance.
+- Strong nonlinear classification performance.
+- Benefited significantly from class balancing.
+- RBF Kernel captured complex decision boundaries.
+- Hyperparameter tuning substantially improved performance.
+- Remained among the strongest models tested.
+
+### Decision Tree Classifier
+
+- Best-performing model in the project.
+- Highly interpretable and easy to visualize.
+- Did not require feature scaling.
 - Benefited heavily from class balancing.
-- RBF Kernel captured nonlinear relationships effectively.
-- Hyperparameter tuning significantly improved results.
+- Demonstrated excellent generalization.
+- Showed that shallow trees can outperform more sophisticated algorithms when properly tuned.
 
 ---
 
 ## Current Model Leaderboard
 
 ### Test Set Results
+
 | Rank | Model | F1 Score |
 |------|---------|---------:|
-| 🥇 | Tuned Balanced RBF SVM | **62.32%** |
-| 🥈 | Tuned Balanced Linear SVM | 60.24% |
-| 🥉 | Gaussian Naive Bayes | 59.16% |
-| 4 | Tuned KNN (Random Search) | 59.29%* |
-| 5 | Tuned RBF SVM | 57.09% |
-| 6 | Baseline Linear SVM | 56.31% |
-| 7 | Baseline RBF SVM | 54.78% |
-| 8 | Baseline KNN | 54.17% |
+| 🥇 | Tuned Balanced Decision Tree | **62.73%** |
+| 🥈 | Tuned Balanced RBF SVM | 62.32% |
+| 🥉 | Tuned Balanced Linear SVM | 60.24% |
+| 4 | Tuned KNN (Random Search) | 59.29% |
+| 5 | Gaussian Naive Bayes | 59.16% |
+| 6 | Tuned RBF SVM | 57.09% |
+| 7 | Baseline Linear SVM | 56.31% |
+| 8 | Baseline RBF SVM | 54.78% |
+| 9 | Baseline KNN | 54.17% |
+
+---
+
 
 
 \* KNN score obtained from a different experimental configuration. Final rankings will be updated once all models are evaluated using a consistent test protocol.
@@ -284,6 +306,7 @@ ML-Classification-Lab/
 ├── Customer Churn Classifier - KNN.ipynb
 ├── Customer Churn Classifier - Naive Bayes.ipynb
 ├── Customer Churn Classifier - SVM.ipynb
+├── Customer Churn Classifier - Decision Tree.ipynb
 │
 └── README.md
 ```
@@ -297,25 +320,24 @@ This repository emphasizes understanding:
 - Why preprocessing choices matter
 - How data leakage occurs
 - When scaling is required
-- Differences between linear and nonlinear models
-- Differences between discriminative and probabilistic models
+- Differences between linear, probabilistic, and tree-based models
 - How Bayes' Theorem is used in classification
 - The impact of feature independence assumptions
 - The importance of handling class imbalance
 - Trade-offs between Precision and Recall
 - Proper train-validation-test workflows
 - How model complexity affects generalization
+- Why shallow trees often generalize better than deep trees
 - The impact of hyperparameter tuning on different model families
+- The importance of maintaining an untouched test set
 
 ---
 
 ## Future Work
 
-### Tree-Based Models
+### Tree Ensemble Models
 
-- Decision Trees
 - Random Forests
-- Extra Trees
 
 ### Ensemble Models
 
