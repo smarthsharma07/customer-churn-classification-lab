@@ -177,28 +177,31 @@ consistently achieved higher Recall and F1 Scores by properly accounting for the
 
 ---
 
-### 2. Hyperparameter Tuning Was More Important Than Model Complexity
+### 2. Hyperparameter Tuning Significantly Improved Random Forest Performance
 
-The Decision Tree improved from:
+The Random Forest improved from:
 
 | Model | F1 Score |
 |----------|----------:|
-| Baseline Decision Tree | 50.63% |
-| Tuned Decision Tree | **62.73%** |
+| Baseline Random Forest | 53.39% |
+| Tuned Random Forest | **63.84%** |
 
-This demonstrates that systematic hyperparameter optimization can have a larger impact than simply choosing a more sophisticated algorithm.
+This represents an improvement of approximately **10.45 percentage points** in F1 Score.
+
+The tuning process successfully reduced overfitting while improving minority-class detection.
 
 ---
 
-### 3. Simpler Models Can Generalize Better
+### 3. Ensemble Learning Outperformed a Single Decision Tree
 
-The best-performing Decision Tree used:
+Although the tuned Decision Tree achieved strong performance, the Random Forest surpassed it on the held-out test set.
 
-```python
-max_depth = 3
-```
+Random Forest benefited from averaging multiple decision trees, reducing variance and improving generalization.
 
-A shallow tree generalized better than deeper trees, suggesting that the churn patterns could be captured using only a few important decision rules.
+| Model | Test F1 |
+|----------|----------:|
+| Tuned Balanced Decision Tree | 62.73% |
+| Tuned Balanced Random Forest | **63.84%** |
 
 ---
 
@@ -206,23 +209,27 @@ A shallow tree generalized better than deeper trees, suggesting that the churn p
 
 | Evaluation Stage | F1 Score |
 |----------|----------:|
-| Cross Validation | 62.11% |
-| Validation Set | 61.49% |
-| Test Set | 62.73% |
+| Cross Validation | 64.09% |
+| Validation Set | 62.80% |
+| Test Set | 63.84% |
 
-The consistency across datasets indicates minimal overfitting and strong generalization performance.
+The close agreement between validation and test performance indicates minimal overfitting and strong generalization capability.
 
 ---
 
-### 5. Recall Matters More Than Accuracy
+### 5. Recall Remained a Priority Metric
 
 Customer churn prediction is an imbalanced classification problem.
 
-Missing a customer who is about to churn is often more costly than incorrectly flagging a loyal customer.
+The tuned Random Forest achieved:
 
-For this reason, F1 Score, Recall, and ROC-AUC were prioritized over Accuracy during model selection.
+- Recall: **77.86%**
+- F1 Score: **63.84%**
+
+This means the model successfully identified a large proportion of customers likely to churn while maintaining reasonable precision.
 
 ---
+
 
 ### 6. Naive Bayes Demonstrated the Recall–Precision Tradeoff
 
@@ -271,6 +278,16 @@ This experiment highlighted how different algorithms optimize different aspects 
 - Demonstrated excellent generalization.
 - Showed that shallow trees can outperform more sophisticated algorithms when properly tuned.
 
+### Random Forest Classifier
+
+- Best-performing model in the repository so far.
+- Successfully reduced overfitting through hyperparameter tuning.
+- Benefited significantly from balanced class weights.
+- Achieved the highest overall F1 Score among all tested models.
+- Demonstrated strong generalization across cross-validation, validation, and test datasets.
+- Improved minority-class detection substantially compared to the baseline model.
+- Showed the effectiveness of ensemble learning over a single Decision Tree.
+
 ---
 
 ## Current Model Leaderboard
@@ -279,15 +296,17 @@ This experiment highlighted how different algorithms optimize different aspects 
 
 | Rank | Model | F1 Score |
 |------|---------|---------:|
-| 🥇 | Tuned Balanced Decision Tree | **62.73%** |
-| 🥈 | Tuned Balanced RBF SVM | 62.32% |
-| 🥉 | Tuned Balanced Linear SVM | 60.24% |
-| 4 | Tuned KNN (Random Search) | 59.29% |
-| 5 | Gaussian Naive Bayes | 59.16% |
-| 6 | Tuned RBF SVM | 57.09% |
-| 7 | Baseline Linear SVM | 56.31% |
-| 8 | Baseline RBF SVM | 54.78% |
-| 9 | Baseline KNN | 54.17% |
+| 🥇 | Tuned Balanced Random Forest | **63.84%** |
+| 🥈 | Tuned Balanced Decision Tree | 62.73% |
+| 🥉 | Tuned Balanced RBF SVM | 62.32% |
+| 4 | Tuned Balanced Linear SVM | 60.24% |
+| 5 | Tuned KNN (Random Search) | 59.29% |
+| 6 | Gaussian Naive Bayes | 59.16% |
+| 7 | Tuned RBF SVM | 57.09% |
+| 8 | Baseline Linear SVM | 56.31% |
+| 9 | Baseline RBF SVM | 54.78% |
+| 10 | Baseline KNN | 54.17% |
+| 11 | Baseline Random Forest | 53.39% |
 
 ---
 
@@ -307,6 +326,7 @@ ML-Classification-Lab/
 ├── Customer Churn Classifier - Naive Bayes.ipynb
 ├── Customer Churn Classifier - SVM.ipynb
 ├── Customer Churn Classifier - Decision Tree.ipynb
+├── Customer Churn Classifier - Random Forest.ipynb
 │
 └── README.md
 ```
@@ -334,10 +354,6 @@ This repository emphasizes understanding:
 ---
 
 ## Future Work
-
-### Tree Ensemble Models
-
-- Random Forests
 
 ### Ensemble Models
 
