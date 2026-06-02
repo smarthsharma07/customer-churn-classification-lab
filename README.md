@@ -77,14 +77,11 @@ Final Test Evaluation
 
 - Decision Tree Classifier
 - Random Forest Classifier
-- Extra Trees Classifier
+
 
 ### Ensemble Methods
 
-- AdaBoost
-- Gradient Boosting
 - XGBoost
-- LightGBM
 
 ---
 
@@ -128,6 +125,9 @@ Predict whether a customer will churn based on demographic, account, and service
 - Hyperparameter tuning using GridSearchCV
 - Hyperparameter tuning using RandomizedSearchCV
 - Probabilistic classification using Bayes' Theorem
+- Decision Trees
+- Ensemble methods like Random Forest
+- Boosting models like XGBoost
 - Model comparison and validation analysis
 
 ---
