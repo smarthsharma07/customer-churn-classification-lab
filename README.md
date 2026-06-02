@@ -134,15 +134,16 @@ Predict whether a customer will churn based on demographic, account, and service
 
 ## Best Model
 
-### Tuned Balanced Decision Tree
+### Tuned Balanced Random Forest
 
 ```python
-DecisionTreeClassifier(
-    criterion="gini",
-    max_depth=3,
-    min_samples_split=2,
-    min_samples_leaf=1,
+RandomForestClassifier(
     class_weight="balanced",
+    max_depth=10,
+    max_features="log2",
+    min_samples_leaf=8,
+    min_samples_split=2,
+    n_estimators=100,
     random_state=42
 )
 ```
@@ -153,11 +154,11 @@ DecisionTreeClassifier(
 
 | Metric | Score |
 |----------|----------:|
-| Accuracy | 74.93% |
-| Precision | 51.74% |
-| Recall | 79.64% |
-| F1 Score | **62.73%** |
-| ROC-AUC | 76.44% |
+| Accuracy | 76.63% |
+| Precision | 54.09% |
+| Recall | 77.86% |
+| F1 Score | **63.84%** |
+| ROC-AUC | 77.02% |
 
 ---
 
@@ -239,6 +240,20 @@ This experiment highlighted how different algorithms optimize different aspects 
 
 ---
 
+### 7. XGBoost Achieved the Highest ROC-AUC
+
+XGBoost was evaluated using baseline training, hyperparameter tuning, and class-weight balancing.
+
+| Model Variant | F1 Score | ROC-AUC |
+|---------------|---------:|---------:|
+| Baseline XGBoost | 52.22% | 80.07% |
+| Tuned XGBoost | 59.04% | 83.63% |
+| Tuned Weighted XGBoost | 61.72% | **84.31%** |
+
+Although XGBoost achieved the highest ROC-AUC score in the repository, the Tuned Balanced Random Forest achieved a higher Test F1 Score and remained the top-performing model according to the selected evaluation metric.
+
+---
+
 ## Model Insights
 
 ### Logistic Regression
@@ -271,7 +286,6 @@ This experiment highlighted how different algorithms optimize different aspects 
 
 ### Decision Tree Classifier
 
-- Best-performing model in the project.
 - Highly interpretable and easy to visualize.
 - Did not require feature scaling.
 - Benefited heavily from class balancing.
@@ -280,7 +294,7 @@ This experiment highlighted how different algorithms optimize different aspects 
 
 ### Random Forest Classifier
 
-- Best-performing model in the repository so far.
+- Best-performing model in the repository.
 - Successfully reduced overfitting through hyperparameter tuning.
 - Benefited significantly from balanced class weights.
 - Achieved the highest overall F1 Score among all tested models.
@@ -288,27 +302,38 @@ This experiment highlighted how different algorithms optimize different aspects 
 - Improved minority-class detection substantially compared to the baseline model.
 - Showed the effectiveness of ensemble learning over a single Decision Tree.
 
+### XGBoost Classifier
+
+- Strongest boosting-based model evaluated.
+- Achieved the highest ROC-AUC score in the repository.
+- Hyperparameter tuning significantly improved performance.
+- Class weighting substantially increased recall on the minority class.
+- Generalized well from validation to test data.
+- Finished as the second-best model based on Test F1 Score.
+
 ---
 
 ## Current Model Leaderboard
 
 ### Test Set Results
 
+#### Since the dataset was imbalanced the models are evaluated on F1 Score.
+
 | Rank | Model | F1 Score |
 |------|---------|---------:|
 | 🥇 | Tuned Balanced Random Forest | **63.84%** |
-| 🥈 | Tuned Balanced Decision Tree | 62.73% |
-| 🥉 | Tuned Balanced RBF SVM | 62.32% |
-| 4 | Tuned Balanced Linear SVM | 60.24% |
-| 5 | Tuned KNN (Random Search) | 59.29% |
-| 6 | Gaussian Naive Bayes | 59.16% |
-| 7 | Tuned RBF SVM | 57.09% |
-| 8 | Baseline Linear SVM | 56.31% |
-| 9 | Baseline RBF SVM | 54.78% |
-| 10 | Baseline KNN | 54.17% |
-| 11 | Baseline Random Forest | 53.39% |
-
----
+| 🥈 | Tuned Balanced Decision Tree | **62.73%** |
+| 🥉 | Tuned Weighted XGBoost | **61.72%** |
+| 4 | Tuned Balanced RBF SVM | 62.32% |
+| 5 | Tuned Balanced Linear SVM | 60.24% |
+| 6 | Tuned KNN (Random Search) | 59.29% |
+| 7 | Gaussian Naive Bayes | 59.16% |
+| 8 | Tuned RBF SVM | 57.09% |
+| 9 | Baseline Linear SVM | 56.31% |
+| 10 | Baseline RBF SVM | 54.78% |
+| 11 | Baseline KNN | 54.17% |
+| 12 | Baseline Random Forest | 53.39% |
+| 13 | Baseline XGBoost | 52.22% |
 
 
 
@@ -327,6 +352,7 @@ ML-Classification-Lab/
 ├── Customer Churn Classifier - SVM.ipynb
 ├── Customer Churn Classifier - Decision Tree.ipynb
 ├── Customer Churn Classifier - Random Forest.ipynb
+├── Customer Churn Classifier - XGBoost.ipynb
 │
 └── README.md
 ```
@@ -355,13 +381,6 @@ This repository emphasizes understanding:
 
 ## Future Work
 
-### Ensemble Models
-
-- AdaBoost
-- Gradient Boosting
-- XGBoost
-- LightGBM
-
 ### Advanced Topics
 
 - Threshold Tuning
@@ -387,7 +406,3 @@ This repository emphasizes understanding:
 
 **Smarth Sharma**
 
-Electronics and Communication Engineering (ECE)  
-NSUT Delhi
-
-Focused on building strong intuition in Machine Learning through implementation, experimentation, and rigorous model comparison.
